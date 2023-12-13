@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 """Author @Muhammad Shoaib Manzoor"""
 
@@ -28,9 +29,10 @@ def collation_plotter(df, countries, visual, indicator_code, indicator_name):
 
 
     # Select the indicator and drop unnecessary columns
-    indicator_set = df.xs(indicator_code, level='Indicator Code')/
-                .drop(['Indicator Name', 'Country Name'],
-                         axis=1, errors='ignore')
+    indicator_set = df.xs(indicator_code,level='Indicator Code')
+
+    indicator_set.drop(['Indicator Name', 'Country Name'],
+                         axis=1, errors='ignore', inplace=True)
     
     # Filter out countries not in the given list
     countries_set = indicator_set.loc[countries, :]
@@ -46,7 +48,7 @@ def collation_plotter(df, countries, visual, indicator_code, indicator_name):
     data_5yr.plot(kind=visual, stacked=False)
 
     # Set plot labels and legend
-    plt.ylabel(ylabel)
+    plt.ylabel(indicator_name)
     plt.xlabel('Years')
     plt.legend(
         title='Countries', 
@@ -82,9 +84,11 @@ def explorer(df, country_code, indicators, years):
         fmt='.2f', 
         linewidths=.5)
 
+    plt.show()
+
     print('/nBrief Description of Data: ', pivotted_set.describe())
     print('/nMeadian values of each Indicator: ', pivotted_set.median())
-    print('/nStandard deviation between each Indicators: ', /
+    print('/nStandard deviation between each Indicators: ', \
         pivotted_set.std())
 
 
@@ -100,7 +104,7 @@ countries = ['DEU', 'FRA', 'GBR', 'ITA']
 collation_plotter(df_years, countries, 'line','SP.POP.TOTL', 
                     'Population Total')
 
-collation_plotter(df_years, countries, 'line','EN.ATM.CO2E.KT', 
+collation_plotter(df_years, countries, 'bar','EN.ATM.CO2E.KT', 
                     'Carbon Emissions(KT)')
 
 # Naming all the indicators for the country with the highest Carbon emissions.
@@ -117,4 +121,5 @@ country_code = 'DEU'
 years_data = ['1960','1965','1970','1975','1980','1985',
                 '1990','1995','2000','2005','2010','2015','2020']
 
+# Displays exploratory statistics of the provided parameters from dataset.
 explorer(df_countries, country_code, indicator_names, years_data)
